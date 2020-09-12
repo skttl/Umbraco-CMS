@@ -27,6 +27,9 @@ namespace Umbraco.Web.PropertyEditors
         [ConfigurationField("hideLabel", "Hide Label", "boolean", Description = "Hide the property label and let the item list span the full width of the editor window.")]
         public bool HideLabel { get; set; }
 
+        [ConfigurationField("helpText", "Help Text", "textstring", Description = "Set the help text visible while adding new element.")]
+        public string HelpText { get; set; }
+
         public class ContentType
         {
             [JsonProperty("ncAlias")]

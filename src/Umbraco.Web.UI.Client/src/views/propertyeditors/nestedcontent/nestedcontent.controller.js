@@ -86,6 +86,7 @@
         vm.scaffolds = null;
         vm.sorting = false;
         vm.inited = false;
+        vm.helpText = model.config.helpText;
 
         vm.minItems = model.config.minItems || 0;
         vm.maxItems = model.config.maxItems || 0;

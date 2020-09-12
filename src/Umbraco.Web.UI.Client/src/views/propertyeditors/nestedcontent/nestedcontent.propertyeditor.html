@@ -56,8 +56,8 @@
                 class="btn-reset umb-nested-content__add-content umb-focus"
                 ng-class="{ '--disabled': (!vm.scaffolds.length || vm.nodes.length >= vm.maxItems) }"
                 ng-click="vm.openNodeTypePicker($event)"
-                aria-disabled="{{!vm.scaffolds.length || vm.nodes.length >= vm.maxItems}}">
-                <localize key="grid_addElement">Add element</localize>
+                aria-disabled="{{!vm.scaffolds.length || vm.nodes.length >= vm.maxItems}}"
+                ng-bind="vm.helpText">
             </button>
         </div>
 

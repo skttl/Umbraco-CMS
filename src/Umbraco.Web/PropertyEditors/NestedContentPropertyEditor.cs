@@ -25,7 +25,7 @@ namespace Umbraco.Web.PropertyEditors
     [DataEditor(
         Constants.PropertyEditors.Aliases.NestedContent,
         "Nested Content",
-        "nestedcontent", 
+        "nestedcontent",
         ValueType = ValueTypes.Json,
         Group = Constants.PropertyEditors.Groups.Lists,
         Icon = "icon-thumbnail-list")]
@@ -69,7 +69,8 @@ namespace Umbraco.Web.PropertyEditors
             private readonly IDataTypeService _dataTypeService;
             private readonly ILogger _logger;
             private readonly NestedContentValues _nestedContentValues;
-            
+            private readonly ILocalizedTextService _localizedTextService;
+
             public NestedContentPropertyValueEditor(DataEditorAttribute attribute, PropertyEditorCollection propertyEditors, IDataTypeService dataTypeService, IContentTypeService contentTypeService, ILocalizedTextService textService, ILogger logger)
                 : base(attribute)
             {
@@ -77,6 +78,7 @@ namespace Umbraco.Web.PropertyEditors
                 _dataTypeService = dataTypeService;
                 _logger = logger;
                 _nestedContentValues = new NestedContentValues(contentTypeService);
+                _localizedTextService = textService;
                 Validators.Add(new NestedContentValidator(_nestedContentValues, propertyEditors, dataTypeService, textService, contentTypeService));
             }
 
@@ -90,7 +92,17 @@ namespace Umbraco.Web.PropertyEditors
                         throw new ArgumentNullException(nameof(value));
                     if (!(value is NestedContentConfiguration configuration))
                         throw new ArgumentException($"Expected a {typeof(NestedContentConfiguration).Name} instance, but got {value.GetType().Name}.", nameof(value));
-                    base.Configuration = value;
+
+                    if (configuration.HelpText.IsNullOrWhiteSpace())
+                    {
+                        configuration.HelpText = _localizedTextService.Localize("grid/addElement");
+                    }
+                    else
+                    {
+                        configuration.HelpText = _localizedTextService.UmbracoDictionaryTranslate(configuration.HelpText);
+                    }
+
+                    base.Configuration = configuration;
 
                     HideLabel = configuration.HideLabel.TryConvertTo<bool>().Result;
                 }
@@ -329,7 +341,7 @@ namespace Umbraco.Web.PropertyEditors
                     foreach (var prop in row.PropertyValues)
                     {
                         elementValidation.AddPropertyTypeValidation(
-                            new PropertyTypeValidationModel(prop.Value.PropertyType, prop.Value.Value));                        
+                            new PropertyTypeValidationModel(prop.Value.PropertyType, prop.Value.Value));
                     }
                     yield return elementValidation;
                 }
@@ -394,9 +406,9 @@ namespace Umbraco.Web.PropertyEditors
 
                         // doesn't exist so remove it
                         if (!propertyTypes.TryGetValue(prop.Key, out var propType))
-                        {                            
-                            row.RawPropertyValues.Remove(prop.Key); 
-                        }   
+                        {
+                            row.RawPropertyValues.Remove(prop.Key);
+                        }
                         else
                         {
                             // set the value to include the resolved property type
