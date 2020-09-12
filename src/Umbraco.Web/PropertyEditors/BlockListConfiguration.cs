@@ -14,7 +14,6 @@ namespace Umbraco.Web.PropertyEditors
 
         public class BlockConfiguration
         {
-
             [JsonProperty("backgroundColor")]
             public string BackgroundColor { get; set; }
 
@@ -66,5 +65,11 @@ namespace Umbraco.Web.PropertyEditors
 
         [ConfigurationField("maxPropertyWidth", "Property editor width", "textstring", Description = "optional css overwrite, example: 800px or 100%")]
         public string MaxPropertyWidth { get; set; }
+
+        [ConfigurationField("helpText", "Help Text", "textstring", Description = "Set the help text visible while adding new element.")]
+        public string HelpText { get; set; }
+
+        [ConfigurationField("hideLabel", "Hide Label", "boolean", Description = "Hide the property label and let the item list span the full width of the editor window.")]
+        public bool HideLabel { get; set; }
     }
 }
