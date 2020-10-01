@@ -569,20 +569,22 @@
         *
         * @param {Object} item The item to edit
         */
-        function editItem(item, useInfiniteEditor) {
+        function editItem(item, scope) {
             if (!item.editPath) {
                 return;
             }
 
-            if (useInfiniteEditor)
+            if (scope.options.useInfiniteEditor)
             {
                 var editorModel = {
                     id: item.id,
                     submit: function(model) {
                         editorService.close();
+                        scope.getContent(scope.contentId);
                     },
                     close: function() {
                         editorService.close();
+                        scope.getContent(scope.contentId);
                     }
                 };
 

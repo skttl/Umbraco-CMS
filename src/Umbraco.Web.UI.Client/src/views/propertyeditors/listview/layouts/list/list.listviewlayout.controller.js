@@ -53,7 +53,7 @@
         }
 
         function clickItem(item) {
-            listViewHelper.editItem(item, $scope.options.useInfiniteEditor);
+            listViewHelper.editItem(item, $scope);
         }
 
         function isSortDirection(col, direction) {

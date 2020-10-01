@@ -117,7 +117,7 @@
         }
         
         function goToItem(item, $event, $index) {
-            listViewHelper.editItem(item, $scope.options.useInfiniteEditor);
+            listViewHelper.editItem(item, $scope);
         }
 
         activate();
