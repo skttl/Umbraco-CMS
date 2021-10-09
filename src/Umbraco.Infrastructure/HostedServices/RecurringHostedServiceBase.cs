@@ -5,6 +5,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
+using NCrontab;
 
 namespace Umbraco.Cms.Infrastructure.HostedServices
 {
@@ -21,8 +22,9 @@ namespace Umbraco.Cms.Infrastructure.HostedServices
         /// </summary>
         protected static readonly TimeSpan DefaultDelay = TimeSpan.FromMinutes(3);
 
-        private readonly TimeSpan _period;
-        private readonly TimeSpan _delay;
+        private readonly CrontabSchedule _schedule;
+        private TimeSpan _period;
+        private TimeSpan _delay;
         private Timer _timer;
 
         /// <summary>
@@ -36,10 +38,30 @@ namespace Umbraco.Cms.Infrastructure.HostedServices
             _delay = delay;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RecurringHostedServiceBase"/> class.
+        /// </summary>
+        /// <param name="schedule">CrontabSchedule representing how often the task should recur.</param>
+        /// <param name="delay">Optional timespan represeting the initial delay after application start-up before the first run of the task can occurs.</param>
+        protected RecurringHostedServiceBase(CrontabSchedule schedule, TimeSpan? delay)
+        {
+            _schedule = schedule;
+            _delay = delay.GetValueOrDefault(TimeSpan.FromSeconds(0));
+        }
+
         /// <inheritdoc/>
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _timer = new Timer(ExecuteAsync, null, (int)_delay.TotalMilliseconds, (int)_period.TotalMilliseconds);
+            if (_schedule != null)
+            {
+                // Using crontab schedule, get the time of the next occurence based on the current time + delay, and subtract to get the TimeSpan.
+                TimeSpan nextOccurence = _schedule.GetNextOccurrence(DateTime.Now.Add(_delay)) - DateTime.Now;
+                _timer = new Timer(ExecuteAsync, null, (int)nextOccurence.TotalMilliseconds, 0);
+            }
+            else
+            {
+                _timer = new Timer(ExecuteAsync, null, (int)_delay.TotalMilliseconds, (int)_period.TotalMilliseconds);
+            }
             return Task.CompletedTask;
         }
 
@@ -62,9 +84,19 @@ namespace Umbraco.Cms.Infrastructure.HostedServices
             }
             finally
             {
-                // Resume now that the task is complete - Note we use period in both because we don't want to execute again after the delay.
-                // So first execution is after _delay, and the we wait _period between each
-                _timer?.Change((int)_period.TotalMilliseconds, (int)_period.TotalMilliseconds);
+                // Resume now that the task is complete
+                if (_schedule != null)
+                {
+                    // Using crontab schedule, get the time of the next occurence based on the current time, and subtract to get the TimeSpan.
+                    TimeSpan nextOccurence = _schedule.GetNextOccurrence(DateTime.Now) - DateTime.Now;
+                    _timer?.Change((int)nextOccurence.TotalMilliseconds, 0);
+                }
+                else
+                {
+                    // Not using crontab schedule - Note we use period in both because we don't want to execute again after the delay.
+                    // So first execution is after _delay, and the we wait _period between each
+                    _timer?.Change((int)_period.TotalMilliseconds, (int)_period.TotalMilliseconds);
+                }
             }
         }
 
