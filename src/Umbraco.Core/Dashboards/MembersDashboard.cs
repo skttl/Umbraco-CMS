@@ -9,7 +9,7 @@ public class MembersDashboard : IDashboard
 
     public string[] Sections => new[] { "member" };
 
-    public string View => "views/dashboard/members/membersdashboardvideos.html";
+    public string View => "views/member/list.html";
 
     public IAccessRule[] AccessRules => Array.Empty<IAccessRule>();
 }

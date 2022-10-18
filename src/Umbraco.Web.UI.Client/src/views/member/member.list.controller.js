@@ -17,7 +17,7 @@ function MemberListController($scope, $routeParams, $location, $q, $window, appS
     $scope.page.loading = true;
 
     //we are editing so get the content item from the server
-    memberResource.getListNode($routeParams.id)
+    memberResource.getListNode($routeParams.id ?? "all-members")
         .then(function (data) {
 
             $scope.content = data;
