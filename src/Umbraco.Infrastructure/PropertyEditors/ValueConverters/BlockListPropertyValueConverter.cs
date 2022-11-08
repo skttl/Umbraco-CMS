@@ -46,7 +46,7 @@ public class BlockListPropertyValueConverter : BlockPropertyValueConverterBase<B
 
             if (contentElementType is not null)
             {
-                if (settingsElementType != null)
+                if (settingsElementType is not null)
                 {
                     return typeof(BlockListItem<,>).MakeGenericType(contentElementType, settingsElementType);
                 }
