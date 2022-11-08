@@ -6,6 +6,7 @@ using Umbraco.Cms.Core.Models;
 using Umbraco.Cms.Core.Models.Blocks;
 using Umbraco.Cms.Core.Models.PublishedContent;
 using Umbraco.Cms.Core.Services;
+using Umbraco.Cms.Web.Common.DependencyInjection;
 using Umbraco.Extensions;
 using static Umbraco.Cms.Core.PropertyEditors.BlockListConfiguration;
 
@@ -19,7 +20,7 @@ public class BlockListPropertyValueConverter : BlockPropertyValueConverterBase<B
     private readonly BlockListEditorDataConverter _blockListEditorDataConverter;
     private readonly IProfilingLogger _proflog;
 
-    public BlockListPropertyValueConverter(IProfilingLogger proflog, IContentTypeService contentTypeService, BlockEditorConverter blockConverter)
+    public BlockListPropertyValueConverter(IProfilingLogger proflog, BlockEditorConverter blockConverter, IContentTypeService contentTypeService)
         : base(blockConverter)
     {
         _proflog = proflog;
@@ -27,6 +28,9 @@ public class BlockListPropertyValueConverter : BlockPropertyValueConverterBase<B
         _blockListEditorDataConverter = new BlockListEditorDataConverter();
         _contentTypeService = contentTypeService;
     }
+
+    [Obsolete("Use the constructor with the IContentTypeService")]
+    public BlockListPropertyValueConverter(IProfilingLogger proflog, BlockEditorConverter blockConverter) : this(proflog, blockConverter, StaticServiceProvider.Instance.GetRequiredService<IContentTypeService>()) { }
 
     /// <inheritdoc />
     public override bool IsConverter(IPublishedPropertyType propertyType)
