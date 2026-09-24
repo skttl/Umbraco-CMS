@@ -59,5 +59,5 @@ You came to the right place! Our GitHub repository is available for all kinds of
 
 Umbraco is contribution-focused and community-driven. If you want to contribute back to the Umbraco source code, please check out our [guide to contributing](CONTRIBUTING.md).
 
-### Tip: You should not run Umbraco from source code found here. Umbraco is extremely extensible and can do whatever you need. Instead, [install Umbraco as noted above](#looking-to-install-umbraco) and then [extend it any way you want to](https://docs.umbraco.com/umbraco-cms/extending/).
+### Tip: You should not run Umbraco from source code found here. Umbraco is extremely extensible and can do whatever you need. Instead, [install Umbraco as noted above](#looking-to-install-umbraco) and then [extend it any way you want to](https://docs.umbraco.com/umbraco-cms/extend-your-project/backoffice-extensions).
 
